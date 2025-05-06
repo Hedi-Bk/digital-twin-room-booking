@@ -1,105 +1,89 @@
 
-````markdown
-# 🏢 Digital Twin - Gestion intelligente de réservation de salles
 
-## 📝 Contexte
+# 🏢 Digital Twin - Réservation de Salles
 
-Ce projet propose une solution basée sur le concept de *Digital Twin* pour la gestion de la réservation de salles dans un bâtiment (université, entreprise, etc.). Chaque salle est représentée comme une entité numérique permettant de suivre sa disponibilité en temps réel. Les mises à jour proviennent d’une API simulée, sans capteurs physiques.
+## 📌 Contexte
 
-Des notifications sont générées si une salle est occupée sans réservation ou si des conflits apparaissent.
+Ce projet propose une solution de **Digital Twin** pour la gestion de réservation de salles. Chaque salle est modélisée numériquement et son état (réservée, libre, occupation, etc.) est mis à jour via une API simulée.
+Le système est construit autour de composants FIWARE et Docker pour assurer l’interopérabilité, la visualisation en temps réel, et l’archivage des données.
 
-## 🧩 Technologies utilisées
+---
 
-- [FIWARE Orion Context Broker](https://fiware-orion.readthedocs.io/) – Gestion du contexte des salles et des réservations
-- [Draco (NiFi)](https://fiware-draco.readthedocs.io/) – Transfert des données vers MySQL
-- [MySQL] – Stockage des historiques de réservation
-- [Docker / Docker Compose] – Conteneurisation de l’architecture
-- [Fake REST API] – Injection simulée des réservations/états d’occupation
+## 🧠 Objectifs
 
-## 📦 Modèles de données (NGSI v2)
+* Simuler l’état de salles (occupation, disponibilité).
+* Mettre à jour les entités NGSI dans le **Contexte Broker Orion**.
+* Configurer **Draco** pour persister les données vers **MySQL**.
+* Visualiser les informations via une interface web simple.
+* Fournir une solution basée sur **Docker Compose**.
 
-### Exemple : Salle
+---
+
+## 📦 Modèles de données
+
+Exemple d'entité JSON (Room) utilisée :
 
 ```json
 {
-  "id": "urn:ngsi-ld:Room:101",
+  "id": "Room001",
   "type": "Room",
-  "name": "Salle 101",
-  "capacity": 30,
-  "status": "occupied",
-  "currentReservation": "urn:ngsi-ld:Booking:001"
-}
-````
-
-### Exemple : Réservation
-
-```json
-{
-  "id": "urn:ngsi-ld:Booking:001",
-  "type": "Booking",
-  "room": "urn:ngsi-ld:Room:101",
-  "startTime": "2025-05-06T09:00:00Z",
-  "endTime": "2025-05-06T10:30:00Z",
-  "reservedBy": "John Doe"
+  "status": {
+    "type": "Text",
+    "value": "reserved"
+  },
+  "capacity": {
+    "type": "Integer",
+    "value": 30
+  },
+  "currentOccupancy": {
+    "type": "Integer",
+    "value": 20
+  }
 }
 ```
+
+---
 
 ## ⚙️ Installation (Docker Compose)
 
+### Prérequis
+
+* Docker + Docker Compose
+* Git
+
+### Étapes :
+
 ```bash
-git clone https://github.com/ton-utilisateur/room-booking-digital-twin.git
-cd room-booking-digital-twin
+git clone https://github.com/tonuser/digital-twin-room-booking.git
+cd digital-twin-room-booking
 docker compose up -d
 ```
 
-### Extrait du fichier `docker-compose.yml`
+---
 
-```yaml
-version: '3.1'
-services:
-  orion:
-    image: fiware/orion
-    ports:
-      - "1026:1026"
-  mysql:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-    ports:
-      - "3306:3306"
-  draco:
-    image: ging/fiware-draco
-    ports:
-      - "9090:9090"
-```
+## 📂 Contenu du `docker-compose.yml`
+
+* `orion` : broker de contexte (mise à jour des données NGSI).
+* `mongo` : base de données support pour Orion.
+* `draco` : collecte et transformation des données en provenance d'Orion.
+* `mysql` : stockage final des données.
+
+---
 
 ## 🚀 Lancer l'application
 
-1. Lancer les conteneurs avec `docker compose up -d`
-2. Injecter les données via les endpoints API simulés (`curl`, Postman ou script Python)
-3. Observer les changements sur l’entité Room via l’interface Orion ou la base de données
-
-## ✅ Résultats attendus
-
-* Visualisation de la disponibilité des salles en temps réel
-* Détection automatique de conflits de réservation
-* Historique de l’occupation enregistré dans MySQL
-
-## 📸 Captures d'écran
-
-*Ajouter ici des captures de l’interface Orion, des données stockées, ou de ton dashboard personnalisé*
+1. Lancer Docker : `docker compose up -d`
+2. Simuler des mises à jour avec un script Python ou Node.js.
+3. Accéder à l'interface web locale pour voir les salles.
 
 ---
 
-## 🧑‍💻 Auteur
+## 📊 Résultats
 
-Ce projet a été réalisé dans le cadre d’un exercice sur les Digital Twins par \[Ton Nom].
+Voici une capture d’écran de l’interface web avec la visualisation des salles (à ajouter plus tard) :
+
+![Capture](./screenshots/dashboard.png)
 
 ---
 
-📌 N’oublie pas d’ajouter un fichier `.env` ou un dossier `scripts/` si tu as des scripts d’injection.
-
-```
-
-Souhaites-tu que je t’aide aussi à créer les premiers fichiers du projet ?
-```
+Souhaites-tu que je t’aide à rédiger le script simulateur (en Python ou JS) pour qu’il envoie les données à Orion ?
