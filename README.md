@@ -1,52 +1,58 @@
-Voici un exemple complet de fichier `README.md` prêt à être utilisé pour ton projet Digital Twin basé sur une API (ex : gestion de stock ou réservation), sans capteur physique :
 
-# 🧠 Digital Twin - Gestion intelligente des stocks en magasin
+````markdown
+# 🏢 Digital Twin - Gestion intelligente de réservation de salles
 
 ## 📝 Contexte
 
-Ce projet illustre une solution Digital Twin simulée pour un magasin. Il permet de suivre en temps réel l’état des stocks produits via une API. Lorsqu’un seuil minimal est atteint, une notification est déclenchée pour alerter les responsables de chaque magasin concerné.
+Ce projet propose une solution basée sur le concept de *Digital Twin* pour la gestion de la réservation de salles dans un bâtiment (université, entreprise, etc.). Chaque salle est représentée comme une entité numérique permettant de suivre sa disponibilité en temps réel. Les mises à jour proviennent d’une API simulée, sans capteurs physiques.
 
-Aucune donnée physique (capteur IoT) n’est utilisée. Les mises à jour se font via des appels API simulés.
+Des notifications sont générées si une salle est occupée sans réservation ou si des conflits apparaissent.
 
 ## 🧩 Technologies utilisées
 
-- [Orion Context Broker (FIWARE)](https://fiware-orion.readthedocs.io/) – Gestion des entités contextuelles
-- [Draco (FIWARE)](https://fiware-draco.readthedocs.io/) – Envoi des données vers base de données (NiFi)
-- [MongoDB] – Base de données contextuelle
-- [Docker / Docker Compose] – Conteneurisation de la solution
-- [Fake API Python] – Simule les mises à jour des entités
+- [FIWARE Orion Context Broker](https://fiware-orion.readthedocs.io/) – Gestion du contexte des salles et des réservations
+- [Draco (NiFi)](https://fiware-draco.readthedocs.io/) – Transfert des données vers MySQL
+- [MySQL] – Stockage des historiques de réservation
+- [Docker / Docker Compose] – Conteneurisation de l’architecture
+- [Fake REST API] – Injection simulée des réservations/états d’occupation
 
-## 🗃️ Modèle de données JSON (NGSI v2)
+## 📦 Modèles de données (NGSI v2)
 
-### Exemple : InventoryItem
+### Exemple : Salle
 
 ```json
 {
-  "id": "urn:ngsi-ld:InventoryItem:005",
-  "type": "InventoryItem",
-  "refProduct": "urn:ngsi-ld:Product:002",
-  "refShelf": "urn:ngsi-ld:Shelf:unit005",
-  "refStore": "urn:ngsi-ld:Store:002",
-  "shelfCount": 5,
-  "stockCount": 10000
+  "id": "urn:ngsi-ld:Room:101",
+  "type": "Room",
+  "name": "Salle 101",
+  "capacity": 30,
+  "status": "occupied",
+  "currentReservation": "urn:ngsi-ld:Booking:001"
 }
+````
 
-## 🐳 Installation avec Docker Compose
+### Exemple : Réservation
 
-1. Cloner le dépôt :
-
-```bash
-git clone https://github.com/ton-compte/ton-projet.git
-cd ton-projet
+```json
+{
+  "id": "urn:ngsi-ld:Booking:001",
+  "type": "Booking",
+  "room": "urn:ngsi-ld:Room:101",
+  "startTime": "2025-05-06T09:00:00Z",
+  "endTime": "2025-05-06T10:30:00Z",
+  "reservedBy": "John Doe"
+}
 ```
 
-2. Lancer l’environnement :
+## ⚙️ Installation (Docker Compose)
 
 ```bash
+git clone https://github.com/ton-utilisateur/room-booking-digital-twin.git
+cd room-booking-digital-twin
 docker compose up -d
 ```
 
-## 📦 Contenu du fichier `docker-compose.yml`
+### Extrait du fichier `docker-compose.yml`
 
 ```yaml
 version: '3.1'
@@ -55,57 +61,45 @@ services:
     image: fiware/orion
     ports:
       - "1026:1026"
-    depends_on:
-      - mongo
-    command: -dbhost mongo
-
-  mongo:
-    image: mongo:4.4
-    ports:
-      - "27017:27017"
-
-  draco:
-    image: ging/fiware-draco:2.1.0
+  mysql:
+    image: mysql:5.7
     environment:
-      - NIFI_WEB_HTTPS_PORT=9090
-      - SINGLE_USER_CREDENTIALS_USERNAME=admin
-      - SINGLE_USER_CREDENTIALS_PASSWORD=pass1234567890
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+      - "3306:3306"
+  draco:
+    image: ging/fiware-draco
     ports:
       - "9090:9090"
 ```
 
-## 🚀 Comment lancer l’application
+## 🚀 Lancer l'application
 
-1. Ouvrir Orion sur [http://localhost:1026](http://localhost:1026)
-2. Lancer un script (simulateur) pour mettre à jour les stocks via API :
+1. Lancer les conteneurs avec `docker compose up -d`
+2. Injecter les données via les endpoints API simulés (`curl`, Postman ou script Python)
+3. Observer les changements sur l’entité Room via l’interface Orion ou la base de données
 
-```bash
-python simulateur_stock.py
-```
+## ✅ Résultats attendus
 
-3. Observer les notifications dans le dashboard ou les logs.
+* Visualisation de la disponibilité des salles en temps réel
+* Détection automatique de conflits de réservation
+* Historique de l’occupation enregistré dans MySQL
 
-## 📸 Résultats attendus
+## 📸 Captures d'écran
 
-* Notification automatique quand un stock passe sous 10 articles.
-* Affichage des entités mises à jour dans l'interface NiFi ou Orion.
-* Capture d'écran à ajouter ici.
+*Ajouter ici des captures de l’interface Orion, des données stockées, ou de ton dashboard personnalisé*
 
-## 📁 Structure du projet
+---
 
-```bash
-digital-twin-stock/
-├── docker-compose.yml
-├── simulateur_stock.py
-├── README.md
-├── models/
-│   └── inventoryItem.json
-└── screenshots/
-```
+## 🧑‍💻 Auteur
 
-## 📬 Auteur
+Ce projet a été réalisé dans le cadre d’un exercice sur les Digital Twins par \[Ton Nom].
 
-Réalisé par \[Ben Khalifa Elhedi] – Étudiant à SUP'COM – 2025
+---
+
+📌 N’oublie pas d’ajouter un fichier `.env` ou un dossier `scripts/` si tu as des scripts d’injection.
 
 ```
+
+Souhaites-tu que je t’aide aussi à créer les premiers fichiers du projet ?
 ```
