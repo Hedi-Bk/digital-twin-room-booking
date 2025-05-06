@@ -19,8 +19,6 @@ Le système est construit autour de composants FIWARE et Docker pour assurer l�
 
 ---
 
-Voici une version en **Markdown** de l’architecture que tu peux coller directement dans ton `README.md` :
-
 ## 🧱 Architecture du projet
 
 ```plaintext
