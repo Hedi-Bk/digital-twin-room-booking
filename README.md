@@ -21,7 +21,6 @@ Le système est construit autour de composants FIWARE et Docker pour assurer l�
 
 Voici une version en **Markdown** de l’architecture que tu peux coller directement dans ton `README.md` :
 
-````markdown
 ## 🧱 Architecture du projet
 
 ```plaintext
@@ -55,7 +54,7 @@ Voici une version en **Markdown** de l’architecture que tu peux coller directe
 2. **Orion Context Broker** reçoit ces données et gère les entités contextuelles.
 3. **Draco** écoute les changements sur Orion et les persiste vers **MySQL**.
 4. Une **interface web** permet de consulter l’état des salles en temps réel.
-````
+
 
 Souhaites-tu aussi un schéma illustré sous forme d’image ?
 
