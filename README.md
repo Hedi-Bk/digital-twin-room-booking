@@ -22,28 +22,25 @@ Le système est construit autour de composants FIWARE et Docker pour assurer l�
 ## 🧱 Architecture du projet
 
 ```plaintext
-       +----------------+             +------------------------+
-       |  Fake API      | --------->  |  Orion Context Broker  |
-       | (simulateur)   |   NGSI v2   |      (FIWARE)          |
-       +----------------+             +------------------------+
-                                              |
-                                              v
-                           +--------------------------+
-                           |    FIWARE Draco (NiFi)    |
-                           +--------------------------+
-                                              |
-                                              v
-                              +---------------------+
-                              |    MySQL Database   |
-                              +---------------------+
+       
+       +----------------+
+       |   Fake API     |
+       |  (simulateur)  |
+       +--------+-------+
+                |
+                |  (NGSI v2 - REST API)
+                v
+   +-----------------------------+
+   |   Orion Context Broker      |
+   |          (FIWARE)           |
+   +--------------+--------------+
+                  |
+                  v
+       +--------------------+
+       |     MongoDB        |
+       |  (Base de données) |
+       +--------------------+
 
-         Utilisateur
-             |
-             v
-   +-------------------------+
-   | Interface Web (simple) |
-   +-------------------------+
-   (lecture des données depuis Orion ou MySQL)
 ```
 
 ### 🔄 Flux de données
