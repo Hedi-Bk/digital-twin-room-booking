@@ -19,6 +19,50 @@ Le système est construit autour de composants FIWARE et Docker pour assurer l�
 
 ---
 
+Voici une version en **Markdown** de l’architecture que tu peux coller directement dans ton `README.md` :
+
+````markdown
+## 🧱 Architecture du projet
+
+```plaintext
+       +----------------+             +------------------------+
+       |  Fake API      | --------->  |  Orion Context Broker  |
+       | (simulateur)   |   NGSI v2   |      (FIWARE)          |
+       +----------------+             +------------------------+
+                                              |
+                                              v
+                           +--------------------------+
+                           |    FIWARE Draco (NiFi)    |
+                           +--------------------------+
+                                              |
+                                              v
+                              +---------------------+
+                              |    MySQL Database   |
+                              +---------------------+
+
+         Utilisateur
+             |
+             v
+   +-------------------------+
+   | Interface Web (simple) |
+   +-------------------------+
+   (lecture des données depuis Orion ou MySQL)
+```
+
+### 🔄 Flux de données
+
+1. **Fake API** simule les événements liés aux salles (réservations, disponibilité...).
+2. **Orion Context Broker** reçoit ces données et gère les entités contextuelles.
+3. **Draco** écoute les changements sur Orion et les persiste vers **MySQL**.
+4. Une **interface web** permet de consulter l’état des salles en temps réel.
+````
+
+Souhaites-tu aussi un schéma illustré sous forme d’image ?
+
+
+
+
+
 ## 📦 Modèles de données
 
 Exemple d'entité JSON (Room) utilisée :
