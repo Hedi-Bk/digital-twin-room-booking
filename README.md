@@ -1,6 +1,5 @@
 Voici un exemple complet de fichier `README.md` prêt à être utilisé pour ton projet Digital Twin basé sur une API (ex : gestion de stock ou réservation), sans capteur physique :
 
-````markdown
 # 🧠 Digital Twin - Gestion intelligente des stocks en magasin
 
 ## 📝 Contexte
@@ -31,7 +30,6 @@ Aucune donnée physique (capteur IoT) n’est utilisée. Les mises à jour se fo
   "shelfCount": 5,
   "stockCount": 10000
 }
-````
 
 ## 🐳 Installation avec Docker Compose
 
