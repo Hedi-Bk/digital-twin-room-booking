@@ -2,8 +2,6 @@
 
 # 🏢 Digital Twin - Réservation de Salles
 
-# 📡 Digital Twin Room Booking System
-
 Ce projet est une application de démonstration de **jumeau numérique pour la réservation de salles**. Il permet de :
 
 - Gérer des salles avec leurs capacités, taux d’occupation, et état de réservation.
