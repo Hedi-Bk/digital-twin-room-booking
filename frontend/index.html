@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>Liste des Salles</title>
+  </head>
+  <body>
+    <h1>Liste des Salles</h1>
+    <ul id="rooms-list"></ul>
+
+    <script>
+      async function fetchRooms() {
+        const response = await fetch("/api/rooms");
+        const rooms = await response.json();
+        const list = document.getElementById("rooms-list");
+
+        rooms.forEach((room) => {
+          const item = document.createElement("li");
+          item.textContent = `ID: ${room.id}, Type: ${room.type}, Capacité: ${room.capacity}, Réservée: ${room.reserved}`;
+          list.appendChild(item);
+        });
+      }
+
+      fetchRooms();
+    </script>
+  </body>
+</html>
