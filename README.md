@@ -113,7 +113,8 @@ docker compose up -d
 
 ---
 
-🔁 Fonctionnalités principales
+## 🔁 Fonctionnalités principales
+
 GET /rooms/ : liste toutes les salles enregistrées
 
 POST /rooms/ : ajoute une nouvelle salle
