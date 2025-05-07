@@ -144,4 +144,3 @@ Voici une capture d’écran de l’interface web des API disponible :
 
 ---
 
-Souhaites-tu que je t’aide à rédiger le script simulateur (en Python ou JS) pour qu’il envoie les données à Orion ?
