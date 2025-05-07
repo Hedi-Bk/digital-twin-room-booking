@@ -2,20 +2,27 @@
 
 # 🏢 Digital Twin - Réservation de Salles
 
-## 📌 Contexte
+# 📡 Digital Twin Room Booking System
 
-Ce projet propose une solution de **Digital Twin** pour la gestion de réservation de salles. Chaque salle est modélisée numériquement et son état (réservée, libre, occupation, etc.) est mis à jour via une API simulée.
-Le système est construit autour de composants FIWARE et Docker pour assurer l’interopérabilité, la visualisation en temps réel, et l’archivage des données.
+Ce projet est une application de démonstration de **jumeau numérique pour la réservation de salles**. Il permet de :
+
+- Gérer des salles avec leurs capacités, taux d’occupation, et état de réservation.
+- Visualiser et manipuler ces données via une API REST construite avec **FastAPI**.
+- Synchroniser les entités de salle avec un **Orion Context Broker (FIWARE)**.
+- Stocker les données dans une base **MongoDB**.
+- Offrir une interface web simple pour afficher les informations.
 
 ---
 
-## 🧠 Objectifs
+## 🛠️ Technologies utilisées
 
-* Simuler l’état de salles (occupation, disponibilité).
-* Mettre à jour les entités NGSI dans le **Contexte Broker Orion**.
-* Configurer **Draco** pour persister les données vers **MySQL**.
-* Visualiser les informations via une interface web simple.
-* Fournir une solution basée sur **Docker Compose**.
+- **FastAPI** : Backend web pour exposer les endpoints REST.
+- **MongoDB** : Base de données NoSQL pour stocker les salles.
+- **Motor** : Driver asynchrone pour MongoDB avec Python.
+- **FIWARE Orion Context Broker** : Pour centraliser les informations contextuelles.
+- **Docker & Docker Compose** : Pour orchestrer tous les services.
+- **Frontend statique** (HTML/CSS/JS) : Interface légère de visualisation.
+
 
 ---
 
@@ -108,6 +115,19 @@ docker compose up -d
 
 ---
 
+🔁 Fonctionnalités principales
+GET /rooms/ : liste toutes les salles enregistrées
+
+POST /rooms/ : ajoute une nouvelle salle
+
+PUT /rooms/{id} : met à jour une salle
+
+DELETE /rooms/{id} : supprime une salle
+
+POST /notify-room-change : endpoint pour recevoir les notifications de changement (NGSI)
+
+
+
 ## 🚀 Lancer l'application
 
 1. Lancer Docker : `docker compose up -d`
@@ -118,9 +138,10 @@ docker compose up -d
 
 ## 📊 Résultats
 
-Voici une capture d’écran de l’interface web avec la visualisation des salles (à ajouter plus tard) :
+Voici une capture d’écran de l’interface web des API disponible :
 
-![Capture](./screenshots/dashboard.png)
+![image](https://github.com/user-attachments/assets/a590bd2a-d08c-427d-97a4-8dd75aa35259)
+
 
 ---
 
