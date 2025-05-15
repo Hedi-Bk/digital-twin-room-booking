@@ -1,25 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Liste des Salles</title>
+    <meta charset="UTF-8" />
+    <title>Digital Twin Room Booking</title>
   </head>
   <body>
-    <h1>Liste des Salles</h1>
-    <ul id="rooms-list"></ul>
-
-    <script>
-      async function fetchRooms() {
-        const response = await fetch("/api/rooms");
-        const rooms = await response.json();
-        const list = document.getElementById("rooms-list");
-
-        rooms.forEach((room) => {
-          const item = document.createElement("li");
-          item.textContent = `ID: ${room.id}, Type: ${room.type}, Capacité: ${room.capacity}, Réservée: ${room.reserved}`;
-          list.appendChild(item);
-        });
-      }
-
-      fetchRooms();
-    </script>
+    <h1>Bienvenue sur Digital Twin Room Booking</h1>
+    <p>Interface utilisateur à venir...</p>
   </body>
 </html>

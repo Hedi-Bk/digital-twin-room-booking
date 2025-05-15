@@ -1,37 +1,21 @@
-version: "3.9"
+version: "3.8"
 
 services:
-  mongo-db:
-    image: mongo:4.4
-    container_name: mongo-db
-    ports:
-      - "27017:27017"
-    networks:
-      - fiware-net
-
-  orion:
-    image: fiware/orion
-    container_name: fiware-orion
-    depends_on:
-      - mongo-db
-    ports:
-      - "1026:1026"
-    command: -dbhost mongo-db
-    networks:
-      - fiware-net
-
-  fastapi:
-    build:
-      context: ./backend
-    container_name: fastapi-backend
+  backend:
+    build: ./Backend
     ports:
       - "8000:8000"
+    volumes:
+      - ./Backend:/app
     depends_on:
-      - mongo-db
-      - orion
-    networks:
-      - fiware-net
+      - mongo
 
-networks:
-  fiware-net:
-    driver: bridge
+  mongo:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

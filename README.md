@@ -1,6 +1,4 @@
-
-
-# 🏢 Digital Twin - Réservation de Salles
+# 🏢 Digital Twin - Réservation de Salles v2
 
 Ce projet est une application de démonstration de **jumeau numérique pour la réservation de salles**. Il permet de :
 
@@ -21,13 +19,12 @@ Ce projet est une application de démonstration de **jumeau numérique pour la r
 - **Docker & Docker Compose** : Pour orchestrer tous les services.
 - **Frontend statique** (HTML/CSS/JS) : Interface légère de visualisation.
 
-
 ---
 
 ## 🧱 Architecture du projet
 
 ```plaintext
-       
+
        +----------------+
        |   Fake API     |
        |  (simulateur)  |
@@ -55,12 +52,7 @@ Ce projet est une application de démonstration de **jumeau numérique pour la r
 3. **Draco** écoute les changements sur Orion et les persiste vers **MySQL**.
 4. Une **interface web** permet de consulter l’état des salles en temps réel.
 
-
 Souhaites-tu aussi un schéma illustré sous forme d’image ?
-
-
-
-
 
 ## 📦 Modèles de données
 
@@ -91,8 +83,8 @@ Exemple d'entité JSON (Room) utilisée :
 
 ### Prérequis
 
-* Docker + Docker Compose
-* Git
+- Docker + Docker Compose
+- Git
 
 ### Étapes :
 
@@ -106,10 +98,10 @@ docker compose up -d
 
 ## 📂 Contenu du `docker-compose.yml`
 
-* `orion` : broker de contexte (mise à jour des données NGSI).
-* `mongo` : base de données support pour Orion.
-* `draco` : collecte et transformation des données en provenance d'Orion.
-* `mysql` : stockage final des données.
+- `orion` : broker de contexte (mise à jour des données NGSI).
+- `mongo` : base de données support pour Orion.
+- `draco` : collecte et transformation des données en provenance d'Orion.
+- `mysql` : stockage final des données.
 
 ---
 
@@ -125,8 +117,6 @@ DELETE /rooms/{id} : supprime une salle
 
 POST /notify-room-change : endpoint pour recevoir les notifications de changement (NGSI)
 
-
-
 ## 🚀 Lancer l'application
 
 1. Lancer Docker : `docker compose up -d`
@@ -141,6 +131,4 @@ Voici une capture d’écran de l’interface web des API disponible :
 
 ![image](https://github.com/user-attachments/assets/a590bd2a-d08c-427d-97a4-8dd75aa35259)
 
-
 ---
-
