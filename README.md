@@ -127,8 +127,22 @@ POST /notify-room-change : endpoint pour recevoir les notifications de changemen
 
 ## 📊 Résultats
 
-Voici une capture d’écran de l’interface web des API disponible :
+Voici une capture d’écran de l’interface web des de la page principale ainsi que les API disponible :
+
+### Interface web principale :
+La page principale de l’application affiche la liste des salles disponibles avec leurs caractéristiques (type, capacité, état de réservation, etc.). Elle inclut également une section dédiée aux notifications en temps réel qui informe l’utilisateur des dernières opérations effectuées (ajout, modification, suppression de salles).
+
+![image](https://github.com/user-attachments/assets/f623956f-d260-4dbe-a3e8-c2d4ac68b8b4)
+
+### Documentation des API (Swagger UI)
+L’application expose plusieurs endpoints API REST qui permettent de manipuler les données des salles (consultation, création, mise à jour, suppression). Ces APIs sont documentées automatiquement via Swagger UI, accessible et interactive directement dans le navigateur.
+Voici une capture d’écran de cette documentation, qui permet de tester facilement chaque endpoint :
 
 ![image](https://github.com/user-attachments/assets/a590bd2a-d08c-427d-97a4-8dd75aa35259)
+
+
+
+
+
 
 ---
