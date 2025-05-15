@@ -49,8 +49,7 @@ Ce projet est une application de démonstration de **jumeau numérique pour la r
 
 1. **Fake API** simule les événements liés aux salles (réservations, disponibilité...).
 2. **Orion Context Broker** reçoit ces données et gère les entités contextuelles.
-3. **Draco** écoute les changements sur Orion et les persiste vers **MySQL**.
-4. Une **interface web** permet de consulter l’état des salles en temps réel.
+3. Une **interface web** permet de consulter l’état des salles en temps réel.
 
 Souhaites-tu aussi un schéma illustré sous forme d’image ?
 
@@ -100,9 +99,6 @@ docker compose up -d
 
 - `orion` : broker de contexte (mise à jour des données NGSI).
 - `mongo` : base de données support pour Orion.
-- `draco` : collecte et transformation des données en provenance d'Orion.
-- `mysql` : stockage final des données.
-
 ---
 
 ## 🔁 Fonctionnalités principales
