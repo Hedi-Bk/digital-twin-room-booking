@@ -1,12 +1,15 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect , HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from typing import List
 from models import Room
-from crud import create_room
+from crud import create_room, get_rooms, get_room_by_id, update_room, delete_room
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates
+from fastapi import Request
+
 
 app = FastAPI(
     title="Digital Twin Room Booking",
@@ -16,15 +19,16 @@ app = FastAPI(
 
 # Configure les chemins
 current_dir = Path(__file__).parent
-frontend_dir = current_dir.parent / "Frontend"
 
-# Monte les fichiers statiques
-app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
+# Chemin vers le dossier templates
+templates = Jinja2Templates(directory=str(current_dir / "templates"))
 
-# Sert le frontend
 @app.get("/", response_class=HTMLResponse)
-async def serve_frontend():
-    return FileResponse(frontend_dir / "index.html")
+async def read_root(request: Request):
+    rooms = await get_rooms()
+    return templates.TemplateResponse("index.html", {"request": request, "rooms": rooms})
+
+
 
 # Liste des connexions WebSocket actives
 active_connections: List[WebSocket] = []
@@ -41,6 +45,7 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         active_connections.remove(websocket)
 
+
 # Modèle de notification
 class RoomNotification(BaseModel):
     id: str
@@ -53,3 +58,46 @@ class RoomNotification(BaseModel):
 async def notify_room_change(notification: RoomNotification):
     print(f"Notification reçue : {notification}")
     return JSONResponse(content={"message": "Notification reçue et traitée."}, status_code=200)
+
+
+# POST: Ajouter une nouvelle salle
+@app.post("/rooms/", response_model=Room)
+async def api_create_room(room: Room):
+    await create_room(room)
+    return room
+
+# GET: Obtenir une salle par son ID
+@app.get("/rooms/{room_id}", response_model=Room)
+async def api_get_room_by_id(room_id: str):
+    room = await get_room_by_id(room_id)
+    if not room:
+        raise HTTPException(status_code=404, detail="Salle non trouvée")
+    return room
+
+# PUT: Modifier une salle
+@app.put("/rooms/{room_id}")
+async def api_update_room(room_id: str, room_data: dict):
+    await update_room(room_id, room_data)
+    return {"message": "Salle mise à jour avec succès"}
+
+
+
+async def notify_all(message: str):
+    for connection in active_connections:
+        try:
+            await connection.send_text(message)
+        except Exception:
+            pass  # ignore les erreurs de connexion
+
+
+# DELETE: Supprimer une salle
+@app.delete("/rooms/{room_id}")
+async def api_delete_room(room_id: str):
+    room = await get_room_by_id(room_id)
+    if not room:
+        raise HTTPException(status_code=404, detail="Salle non trouvée")
+    
+    await delete_room(room_id)
+    await notify_all(f"Salle supprimée: ID={room.id}, Type={room.type}, Capacité={room.capacity}")
+    
+    return {"message": "Salle supprimée avec succès"}
