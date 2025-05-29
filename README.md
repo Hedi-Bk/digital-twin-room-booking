@@ -128,7 +128,7 @@ Voici une capture d’écran de l’interface web des de la page principale ains
 ### Interface web principale :
 La page principale de l’application affiche la liste des salles disponibles avec leurs caractéristiques (type, capacité, état de réservation, etc.). Elle inclut également une section dédiée aux notifications en temps réel qui informe l’utilisateur des dernières opérations effectuées (ajout, modification, suppression de salles).
 
-![image](https://github.com/user-attachments/assets/f623956f-d260-4dbe-a3e8-c2d4ac68b8b4)
+![image](https://github.com/user-attachments/assets/50ff1914-7cb8-4542-bf75-17a33177fd8d)
 
 ### Documentation des API (Swagger UI)
 L’application expose plusieurs endpoints API REST qui permettent de manipuler les données des salles (consultation, création, mise à jour, suppression). Ces APIs sont documentées automatiquement via Swagger UI, accessible et interactive directement dans le navigateur.
