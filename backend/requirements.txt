@@ -1,6 +1,7 @@
 fastapi
-uvicorn[standard]
-motor
+uvicorn
+requests
+pymongo
 jinja2
-pydantic
-faker
+requests
+httpx

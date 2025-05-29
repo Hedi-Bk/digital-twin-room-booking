@@ -1,23 +1,48 @@
-from database import rooms_collection
+### crud.py
 from models import Room
+import httpx
 
+
+ORION_URL = "http://orion:1026/v2/entities"
+HEADERS = {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+}
+# 🔹 Create Room
 async def create_room(room: Room):
-    await rooms_collection.insert_one(room.dict())
+    async with httpx.AsyncClient() as client:
+        response = await client.post(ORION_URL, json=room.dict(), headers=HEADERS)
+        response.raise_for_status()
+        return room
 
-async def get_rooms():
-    rooms = []
-    async for room in rooms_collection.find():
-        rooms.append(Room(**room))
-    return rooms
+# 🔹 Get all rooms
+async def get_all_rooms():
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{ORION_URL}?type=Room", headers={"Accept": "application/json"})
+        response.raise_for_status()
+        return response.json()
 
+# 🔹 Get one room
 async def get_room_by_id(room_id: str):
-    room = await rooms_collection.find_one({"id": room_id})
-    if room:
-        return Room(**room)
-    return None
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{ORION_URL}/{room_id}", headers={"Accept": "application/json"})
+        if response.status_code == 404:
+            return None
+        response.raise_for_status()
+        return response.json()
 
-async def update_room(room_id: str, room_data: dict):
-    await rooms_collection.update_one({"id": room_id}, {"$set": room_data})
+# 🔹 Update room (remplacement complet)
+async def update_room(room_id: str, updated_data: dict):
+    async with httpx.AsyncClient() as client:
+        response = await client.patch(f"{ORION_URL}/{room_id}/attrs", json=updated_data, headers=HEADERS)
+        response.raise_for_status()
+        return updated_data
 
+# 🔹 Delete room
 async def delete_room(room_id: str):
-    await rooms_collection.delete_one({"id": room_id})
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(f"{ORION_URL}/{room_id}", headers=HEADERS)
+        if response.status_code == 404:
+            return False
+        response.raise_for_status()
+        return True

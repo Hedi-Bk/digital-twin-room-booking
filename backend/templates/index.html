@@ -2,90 +2,112 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>Liste des Salles Disponibles</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tableau de Bord des Salles</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        padding-top: 40px;
+        padding-bottom: 40px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 10px;
+        color: #343a40;
+        font-weight: 700;
+      }
+      #room-count {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+        color: #555;
+      }
+      .room-card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        transition: transform 0.2s;
+      }
+      .room-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      }
+      .room-header {
+        background-color: #007bff;
+        color: white;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+      .room-body {
+        padding: 15px 20px;
+        color: #495057;
+      }
+    </style>
   </head>
-
-    <div class="container py-5">
-      <h1 class="mb-4 text-center text-primary">
-        Liste des Salles Disponibles :
-        <span style="color: red"> {{ rooms | length }} </span>
-        salle{% if rooms|length > 1 %}s{% endif %} disponible{% if rooms|length
-        > 1 %}s{% endif %}
-      </h1>
-      <div
-        id="notifications"
-        class="alert alert-info"
-        role="alert"
-        style="max-height: 150px; overflow-y: auto"
-      >
-        <h5>Dernières modifications :</h5>
-        <ul
-          id="notifications-list"
-          style="padding-left: 20px; margin-bottom: 0"
-        ></ul>
-      </div>
-      <script>
-        const notificationsList = document.getElementById("notifications-list");
-
-        const ws = new WebSocket(
-          `ws://${window.location.host}/ws/notifications`
-        );
-
-        ws.onmessage = function (event) {
-          const message = event.data;
-
-          // Créer un nouvel élément <li> pour la notification
-          const li = document.createElement("li");
-          li.textContent = message;
-
-          // Ajouter la notification en haut de la liste (optionnel)
-          notificationsList.prepend(li);
-
-          // Garder une limite de notifications visibles (ex: max 10)
-          if (notificationsList.childElementCount > 10) {
-            notificationsList.removeChild(notificationsList.lastChild);
-          }
-        };
-
-        ws.onopen = function () {
-          console.log("Connexion WebSocket établie.");
-        };
-
-        ws.onclose = function () {
-          console.log("Connexion WebSocket fermée.");
-        };
-      </script>
-
-      <div class="row">
-        {% for room in rooms %}
-        <div class="col-md-6 col-lg-4 mb-4">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title text-capitalize">{{ room.type }} Room</h5>
-              <ul class="list-unstyled mb-3">
-                <li><strong>Capacité :</strong> {{ room.capacity }}</li>
-                <li><strong>Occupancy :</strong> {{ room.occupancy }}</li>
-                <li>
-                  <strong>Réservé :</strong>
-                  {% if room.reserved %}
-                  <span class="badge bg-danger">Oui</span>
-                  {% else %}
-                  <span class="badge bg-success">Non</span>
-                  {% endif %}
-                </li>
-                <li><strong>ID:</strong> {{ room.id }}</li>
-              </ul>
-              <!-- Tu peux ajouter un bouton plus tard -->
-              <!-- <a href="#" class="btn btn-primary">Réserver</a> -->
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
+  <body>
+    <div class="container">
+      <h1>Liste des Salles Disponibles</h1>
+      <div id="room-count">Chargement du nombre de salles...</div>
+      <div id="rooms" class="row gy-3"></div>
     </div>
+
+    <script>
+      async function fetchRooms() {
+        try {
+          const res = await fetch("/rooms/");
+          if (!res.ok) throw new Error("Erreur de récupération des salles");
+          const rooms = await res.json();
+
+          // Affiche le nombre de salles
+          const countElem = document.getElementById("room-count");
+          countElem.textContent = `Nombre total de salles : ${rooms.length}`;
+
+          const container = document.getElementById("rooms");
+          container.innerHTML = "";
+
+          if (rooms.length === 0) {
+            container.innerHTML =
+              '<p class="text-center text-muted">Aucune salle disponible.</p>';
+            return;
+          }
+
+          rooms.forEach((room) => {
+            const col = document.createElement("div");
+            col.className = "col-md-6 col-lg-4";
+
+            const card = document.createElement("div");
+            card.className = "room-card";
+
+            card.innerHTML = `
+            <div class="room-header">${room.name.value}</div>
+            <div class="room-body">
+              <p><strong>Capacité :</strong> ${room.capacity.value}</p>
+              <p><strong>Occupée :</strong> ${room.occupancy.value}</p>
+              <p><strong>Réservée :</strong> ${
+                room.reserved.value ? "Oui" : "Non"
+              }</p>
+            </div>
+          `;
+
+            col.appendChild(card);
+            container.appendChild(col);
+          });
+        } catch (error) {
+          document.getElementById("room-count").textContent = "";
+          document.getElementById(
+            "rooms"
+          ).innerHTML = `<p class="text-danger text-center">${error.message}</p>`;
+        }
+      }
+
+      fetchRooms();
+    </script>
   </body>
 </html>

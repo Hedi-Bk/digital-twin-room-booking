@@ -1,21 +1,39 @@
-version: "3.8"
+version: "3.9"
 
 services:
   backend:
-    build: ./Backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "8000:8000"
-    volumes:
-      - ./Backend:/app
     depends_on:
-      - mongo
+      orion:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
 
-  mongo:
-    image: mongo:4.4
+  mongodb:
+    image: mongo
     ports:
       - "27017:27017"
     volumes:
-      - mongo_data:/data/db
+      - mongo-data:/data/db
+
+  orion:
+    image: fiware/orion
+    hostname: orion
+    container_name: orion
+    depends_on:
+      - mongodb
+    ports:
+      - "1026:1026"
+    command: -dbURI mongodb://mongodb:27017
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1026/version"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  mongo_data:
+  mongo-data:
